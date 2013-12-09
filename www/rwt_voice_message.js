@@ -113,9 +113,9 @@ $(function() {
                 confidence: "Confidence"
             },
             'ru-RU': {
-                number: "",
-                word: "",
-                confidence: ""
+                number: "№",
+                word: "Слово",
+                confidence: "Конфиденция"
             }
         }
     };

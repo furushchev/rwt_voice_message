@@ -1,34 +1,4 @@
 $(function() {
-/*
-    ROSLIB.Ros.prototype.getTopicsForType = function(type, callback) {
-        var topicsForTypeClient = new ROSLIB.Service({
-            ros : this,
-            name : '/rosapi/topics_for_type',
-            serviceType : 'rosapi/TopicsForType'
-        });
-        var request = new ROSLIB.ServiceRequest({
-            type: type
-        });
-        topicsForTypeClient.callService(request, function(result) {
-            callback(result.topics);
-        });
-    };
-
-    ROSLIB.Ros.prototype.getTopicType = function(topic, callback) {
-        var topicTypeClient = new ROSLIB.Service({
-            ros : this,
-            name : '/rosapi/topic_type',
-            serviceType : 'rosapi/TopicType'
-        });
-        var request = new ROSLIB.ServiceRequest({
-            topic: topic
-        });
-        topicTypeClient.callService(request, function(result) {
-            callback(result.type);
-        });
-    };
-*/
-
     var ros = new ROSLIB.Ros({
         url: "ws://" + location.hostname + ":8888"
     });
@@ -66,29 +36,34 @@ $(function() {
 
     voice_recog.onresult = function(e){
         var msg = new ROSLIB.Message({
-            text: []
+            texts: []
         });
-        var results = e.results;
-        messages = "<ul>";
-        for (var i = e.resultIndex; i < results.length; ++i){
-            var res = results[i][0].transcript;
-            messages += "<li>" + res + "</li>";
-            msg['text'].push = res;
+        var recentResults = e.results[e.results.length-1];
+
+        var messages = "<table><tr><td>" + info['table'][voice_recog.lang].number + "</td>";
+        message += "<td>" + info.table[voice_recog.lang].word + "</td>";
+        message += "<td>" + info.table[voice_recog.lang].confidence + "</td></tr>";
+        for (var i = 0; i < recentResults.length; ++i){
+            var word = recentResults[i].transcript;
+            var conf = recentResults[i].confidence;
+            messages += "<tr><td>" + i + "</td><td>" + res + "</td><td>" + conf + "</td></tr>";
+            msg['texts'].push(res);
         }
-        messages += "</ul>";
+        messages += "</table>";
         $('#messages').append(messages);
+        console.log(JSON.stringify(msg));
         tabletVoice.publish(msg);
     };
 
     var isSpeaking = false;
     $("#speak").on("click", function (){
         if (!isSpeaking) {
-            console.log("start");
+            console.log("speak on");
             voice_recog.start();
             isSpeaking = true;
             $("#speak").text("Stop");
         } else {
-            console.log("stop");
+            console.log("speak off");
             voice_recog.stop();
             isSpeaking = false;
             $("#speak").text("Speak");
@@ -97,7 +72,7 @@ $(function() {
     $("#once").on("click", function(){
         if (voice_recog.continuous){
             voice_recog.stop();
-            $("#speak").text("Speak").attr("style", "");
+            $("#speak").text("Speak").attr("disabled", "");
             voice_recog.continuous = false;
             $("#once").addClass("btn-primary");
             $("#continuous").removeClass("btn-primary");
@@ -105,7 +80,7 @@ $(function() {
     });
     $("#continuous").on("click", function (){
         if (!voice_recog.continuous){
-            $("#speak").text("Speak").attr("style", "visibility:hidden");
+            $("#speak").text("Speak").attr("disabled", "disabled");
             voice_recog.continuous = true;
             $("#continuous").addClass("btn-primary");
             $("#once").removeClass("btn-primary");
@@ -118,9 +93,30 @@ $(function() {
             voice_recog.interimResults = true;
             voice_recog.start();
         } else {
-            voice.recog.stop();
+            voice_recog.stop();
             voice_recog.interimResults = false;
             voice_recog.start();
         }
     });
+
+
+    var info = {
+        table: {
+            'ja-JP': {
+                number: "番号",
+                word: "認識された文章",
+                confidence: "一致度"
+            },
+            'en-US': {
+                number: "No.",
+                word: "Words",
+                confidence: "Confidence"
+            },
+            'ru-RU': {
+                number: "",
+                word: "",
+                confidence: ""
+            }
+        }
+    };
 });
