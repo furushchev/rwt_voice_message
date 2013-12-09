@@ -1,11 +1,4 @@
 $(function() {
-    var unicodeEscape = function(str) {
-        var code, pref = {1: '\\u000', 2: '\\u00', 3: '\\u0', 4: '\\u'};
-        return str.replace(/\W/g, function(c) {
-            return pref[(code = c.charCodeAt(0).toString(16)).length] + code;
-        });
-    };
-
     var ros = new ROSLIB.Ros({
         url: "ws://" + location.hostname + ":8888"
     });
@@ -45,17 +38,18 @@ $(function() {
         var msg = new ROSLIB.Message({
             texts: []
         });
-        var results = e.results;
-        var messages = "";
+        var recentResults = e.results[e.results.length-1];
 
-        messages += "<ul>";
-        for (var j = 0; j < results[results.length-1].length; ++j){
-            var res = results[results.length-1][j].transcript;
-            messages += "<li>" + res + "</li>";
+        var messages = "<table><tr><td>" + info['table'][voice_recog.lang].number + "</td>";
+        message += "<td>" + info.table[voice_recog.lang].word + "</td>";
+        message += "<td>" + info.table[voice_recog.lang].confidence + "</td></tr>";
+        for (var i = 0; i < recentResults.length; ++i){
+            var word = recentResults[i].transcript;
+            var conf = recentResults[i].confidence;
+            messages += "<tr><td>" + i + "</td><td>" + res + "</td><td>" + conf + "</td></tr>";
             msg['texts'].push(res);
         }
-
-        messages += "</ul>";
+        messages += "</table>";
         $('#messages').append(messages);
         console.log(JSON.stringify(msg));
         tabletVoice.publish(msg);
@@ -64,12 +58,12 @@ $(function() {
     var isSpeaking = false;
     $("#speak").on("click", function (){
         if (!isSpeaking) {
-            console.log("start");
+            console.log("speak on");
             voice_recog.start();
             isSpeaking = true;
             $("#speak").text("Stop");
         } else {
-            console.log("stop");
+            console.log("speak off");
             voice_recog.stop();
             isSpeaking = false;
             $("#speak").text("Speak");
@@ -78,7 +72,7 @@ $(function() {
     $("#once").on("click", function(){
         if (voice_recog.continuous){
             voice_recog.stop();
-            $("#speak").text("Speak").attr("style", "");
+            $("#speak").text("Speak").attr("disabled", "");
             voice_recog.continuous = false;
             $("#once").addClass("btn-primary");
             $("#continuous").removeClass("btn-primary");
@@ -86,7 +80,7 @@ $(function() {
     });
     $("#continuous").on("click", function (){
         if (!voice_recog.continuous){
-            $("#speak").text("Speak").attr("style", "visibility:hidden");
+            $("#speak").text("Speak").attr("disabled", "disabled");
             voice_recog.continuous = true;
             $("#continuous").addClass("btn-primary");
             $("#once").removeClass("btn-primary");
@@ -99,9 +93,30 @@ $(function() {
             voice_recog.interimResults = true;
             voice_recog.start();
         } else {
-            voice.recog.stop();
+            voice_recog.stop();
             voice_recog.interimResults = false;
             voice_recog.start();
         }
     });
+
+
+    var info = {
+        table: {
+            'ja-JP': {
+                number: "番号",
+                word: "認識された文章",
+                confidence: "一致度"
+            },
+            'en-US': {
+                number: "No.",
+                word: "Words",
+                confidence: "Confidence"
+            },
+            'ru-RU': {
+                number: "",
+                word: "",
+                confidence: ""
+            }
+        }
+    };
 });

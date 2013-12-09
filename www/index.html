@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rwt_voice_message</title>
   </head>
   <body>
@@ -10,18 +11,25 @@
       <div class="page-header">
         <h1><span class="glyphicon glyphicon-star"></span>rwt_voice_message</h1>
       </div>
-      <form id="topic-form" role="form" class="form-inline">
-        <div class="btn-toolbar">
-          <div class="btn-group">
-            <button type="button" id="continuous">Continuous</button>
-            <button type="button" id="once" class="btn-primary">Once</button>
-            <label class="checkbox inline">
-              <input type="checkbox" id="detail" value="detail">Detail
-            </label>
-          </div>
-          <button type="button" id="speak">Speak</button>
+      <div class="btn-group btn-lg">
+        <button type="button" class="btn btn-default" id="continuous">Continuous</button>
+        <button type="button" class="btn btn-primary" id="once">Once</button>
+        <button type="button" class="btn btn-default" id="speak">Speak</button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Language
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li id="lang" value="ja-JP">日本語</li>
+            <li id="lang" value="en-US">English</li>
+            <li id="lang" value="ru-RU">Russian</li>
+          </ul>
         </div>
-      </form>
+      </div>
+      <label class="checkbox inline">
+        <input type="checkbox" id="detail" value="detail">Detail
+      </label>
       <p>current status: <div id="status"></div></p>
       <p> Results: <div id="messages"></div></p>
     </div>
