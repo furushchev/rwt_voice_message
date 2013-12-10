@@ -12,26 +12,27 @@
         <h1><span class="glyphicon glyphicon-star"></span>rwt_voice_message</h1>
       </div>
       <div class="btn-group btn-lg">
-        <button type="button" class="btn btn-default" id="continuous">Continuous</button>
-        <button type="button" class="btn btn-primary" id="once">Once</button>
-        <button type="button" class="btn btn-default" id="speak">Speak</button>
+        <button type="button" class="btn btn-default" id="continuous"></button>
+        <button type="button" class="btn btn-primary" id="once"></button>
+        <button type="button" class="btn btn-default" id="speak"></button>
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            Language
+            <span id="language"></span>
             <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu">
-            <li id="lang" value="ja-JP">日本語</li>
-            <li id="lang" value="en-US">English</li>
-            <li id="lang" value="ru-RU">Russian</li>
+          <ul class="dropdown-menu" id="lang-selector">
+            <li value="ja-JP">日本語</li>
+            <li value="en-US">English</li>
+            <li value="ru-RU">Russian</li>
           </ul>
         </div>
       </div>
       <label class="checkbox inline">
-        <input type="checkbox" id="detail" value="detail">Detail
+        <input type="checkbox" id="detail" value="detail">
+        <span id="detail-label"></span>
       </label>
-      <p>current status: <div id="status"></div></p>
-      <p> Results: <div id="messages"></div></p>
+      <p><span id="status-label"></span>: <div id="status"></div></p>
+      <p><span id="result-label"></span>: <div id="messages"></div></p>
     </div>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
