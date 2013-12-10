@@ -9,6 +9,16 @@ $(function() {
         messageType: 'jsk_gui_msgs/VoiceMessage'
     });
 
+    var showMenuString = function (){
+        $("#continuous").text(info.menu[voice_recog.lang].continuous);
+        $("#once").text(info.menu[voice_recog.lang].once);
+        $("#speak").text(info.menu[voice_recog.lang].speak);
+        $("#language").text(info.menu[voice_recog.lang].language);
+        $("#detail-label").text(info.menu[voice_recog.lang].detail);
+        $("#status-label").text(info.menu[voice_recog.lang].status);
+        $("#result-label").text(info.menu[voice_recog.lang].result);
+    };
+
     var voice_recog = new webkitSpeechRecognition();
     voice_recog.lang = "ja-JP";
     voice_recog.continuous = false;
@@ -16,22 +26,22 @@ $(function() {
 
     voice_recog.onsoundstart = function(){
         console.log("recog start.");
-        $("#status").text("recognizing...");
+        $("#status").text(info.status[voice_recog.lang].soundstart);
     };
 
     voice_recog.onnomatch = function(){
         console.log("recog nomatch.");
-        $('#status').text("No match found. Try again.");
+        $('#status').text(info.status[voice_recog.lang].nomatch);
     };
 
     voice_recog.onerror = function(){
         console.log("recog error.");
-        $('#status').text("Error.");
+        $('#status').text(info.status[voice_recog.lang].error);
     };
 
     voice_recog.onsoundend = function(){
         console.log("recog soundend.");
-        $('#status').text("Idle.");
+        $('#status').text(info.status[voice_recog.lang].soundend);
     };
 
     voice_recog.onresult = function(e){
@@ -40,17 +50,17 @@ $(function() {
         });
         var recentResults = e.results[e.results.length-1];
 
-        var messages = "<table><tr><td>" + info['table'][voice_recog.lang].number + "</td>";
+        var message = "<table class=\"table table-striped\"><tr><td>" + info.table[voice_recog.lang].number + "</td>";
         message += "<td>" + info.table[voice_recog.lang].word + "</td>";
         message += "<td>" + info.table[voice_recog.lang].confidence + "</td></tr>";
         for (var i = 0; i < recentResults.length; ++i){
             var word = recentResults[i].transcript;
             var conf = recentResults[i].confidence;
-            messages += "<tr><td>" + i + "</td><td>" + res + "</td><td>" + conf + "</td></tr>";
-            msg['texts'].push(res);
+            message += "<tr><td>" + i + "</td><td>" + word + "</td><td>" + conf + "</td></tr>";
+            msg['texts'].push(word);
         }
-        messages += "</table>";
-        $('#messages').append(messages);
+        message += "</table>";
+        $('#messages').append(message);
         console.log(JSON.stringify(msg));
         tabletVoice.publish(msg);
     };
@@ -61,18 +71,18 @@ $(function() {
             console.log("speak on");
             voice_recog.start();
             isSpeaking = true;
-            $("#speak").text("Stop");
+            $("#speak").text(info.menu[voice_recog.lang].stop);
         } else {
             console.log("speak off");
             voice_recog.stop();
             isSpeaking = false;
-            $("#speak").text("Speak");
+            $("#speak").text(info.menu[voice_recog.lang].speak);
         }
     });
     $("#once").on("click", function(){
         if (voice_recog.continuous){
             voice_recog.stop();
-            $("#speak").text("Speak").attr("disabled", "");
+            $("#speak").text(info.menu[voice_recog.lang].speak).attr("disabled", "");
             voice_recog.continuous = false;
             $("#once").addClass("btn-primary");
             $("#continuous").removeClass("btn-primary");
@@ -80,7 +90,7 @@ $(function() {
     });
     $("#continuous").on("click", function (){
         if (!voice_recog.continuous){
-            $("#speak").text("Speak").attr("disabled", "disabled");
+            $("#speak").text(info.menu[voice_recog.lang].speak).attr("disabled", "disabled");
             voice_recog.continuous = true;
             $("#continuous").addClass("btn-primary");
             $("#once").removeClass("btn-primary");
@@ -99,8 +109,65 @@ $(function() {
         }
     });
 
+    $("#lang-selector li").click(function (){
+        console.log("lang selected: " + $(this).attr('value'));
+        voice_recog.lang = $(this).attr('value');
+        showMenuString();
+    });
 
-    var info = {
+    info = {
+        menu: {
+            'ja-JP': {
+                continuous: "連続",
+                once: "一回",
+                speak: "開始",
+                stop: "停止",
+                language: "言語",
+                detail: "途中結果の表示",
+                status: "状態",
+                result: "結果"
+            },
+            'en-US': {
+                continuous: "Continuous",
+                once: "Once",
+                speak: "Speak",
+                stop: "Stop",
+                language: "Language",
+                detail: "Show Detail",
+                status: "Current Status",
+                result: "Results"
+            },
+            'ru-RU': {
+                continuous: "",
+                once: "",
+                speak: "",
+                stop: "",
+                language: "",
+                detail: "",
+                status: "",
+                result: ""
+            },
+        },
+        status: {
+            'ja-JP': {
+                soundstart: "認識中",
+                nomatch: "一致なし",
+                error: "エラー",
+                soundend: "待機"
+            },
+            'en-US': {
+                soundstart: "Recognizing...",
+                nomatch: "No match.",
+                error: "Error.",
+                soundend: "Idle."
+            },
+            'ru-RU': {
+                soundstart: "",
+                nomatch: "",
+                error: "",
+                soundend: ""
+            },
+        },
         table: {
             'ja-JP': {
                 number: "番号",
@@ -113,10 +180,11 @@ $(function() {
                 confidence: "Confidence"
             },
             'ru-RU': {
-                number: "",
-                word: "",
-                confidence: ""
+                number: "№",
+                word: "Слово",
+                confidence: "Конфиденция"
             }
         }
     };
+    showMenuString();
 });
