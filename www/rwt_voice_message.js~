@@ -138,14 +138,14 @@ $(function() {
                 result: "Results"
             },
             'ru-RU': {
-                continuous: "",
-                once: "",
-                speak: "",
-                stop: "",
-                language: "",
-                detail: "",
-                status: "",
-                result: ""
+                continuous: "Непрерывный",
+                once: "Один раз",
+                speak: "Разгавор",
+                stop: "Выкл.",
+                language: "Язык",
+                detail: "показать подробность",
+                status: "Статус",
+                result: "Результат"
             },
         },
         status: {
@@ -162,10 +162,10 @@ $(function() {
                 soundend: "Idle."
             },
             'ru-RU': {
-                soundstart: "",
-                nomatch: "",
-                error: "",
-                soundend: ""
+                soundstart: "Жду разговор...",
+                nomatch: "Ничего найденно.",
+                error: "Идет ошибку.",
+                soundend: "Жду комманду..."
             },
         },
         table: {
