@@ -16,27 +16,39 @@ $(function() {
         $("#language").text(info.menu[voice_recog.lang].language);
         $("#detail-label").text(info.menu[voice_recog.lang].detail);
         $("#status-label").text(info.menu[voice_recog.lang].status);
+        $("#clear-result").text(info.menu[voice_recog.lang].clear);
         $("#result-label").text(info.menu[voice_recog.lang].result);
+        $("#publish-detail-label").text(info.menu[voice_recog.lang].publishdetail);
     };
 
     var voice_recog = new webkitSpeechRecognition();
     voice_recog.lang = "ja-JP";
     voice_recog.continuous = false;
     voice_recog.interimResults = false;
+    voice_recog.maxAlternatives = 5;
 
     voice_recog.onsoundstart = function(){
         console.log("recog start.");
         $("#status").text(info.status[voice_recog.lang].soundstart);
     };
 
+    voice_recog.onspeechstart = function() {
+        console.log("onspeechstart");
+        $("#status").text("speech start");
+    };
+
+    voice_recog.onspeechend = function() {
+        console.log("onspeechend");
+        $("#status").text("speech end");
+    };
     voice_recog.onnomatch = function(){
         console.log("recog nomatch.");
         $('#status').text(info.status[voice_recog.lang].nomatch);
     };
 
-    voice_recog.onerror = function(){
-        console.log("recog error.");
-        $('#status').text(info.status[voice_recog.lang].error);
+    voice_recog.onerror = function(e){
+        console.log("recog error.: " + e.error);
+        $('#status').text(info.status[voice_recog.lang].error + ": " + e.error);
     };
 
     voice_recog.onsoundend = function(){
@@ -44,6 +56,7 @@ $(function() {
         $('#status').text(info.status[voice_recog.lang].soundend);
     };
 
+    isPublishDetail = false;
     voice_recog.onresult = function(e){
         var msg = new ROSLIB.Message({
             texts: []
@@ -53,14 +66,29 @@ $(function() {
         var message = "<table class=\"table table-striped\"><tr><td>" + info.table[voice_recog.lang].number + "</td>";
         message += "<td>" + info.table[voice_recog.lang].word + "</td>";
         message += "<td>" + info.table[voice_recog.lang].confidence + "</td></tr>";
+
+        for (var i = e.resultIndex; i < e.results.length; ++i){
+            var word = e.results[i][0].transcript;
+            var conf = e.results[i][0].confidence;
+            if (word != "")
+                message += "<tr><td>" + (i - e.resultIndex + 1) + "</td><td>" + word + "</td><td>" + conf + "</td></tr>";
+            if (isPublishDetail) {
+                msg['texts'].push(word);
+            } else {
+                console.log("debug");
+                if (e.results[i][0].final) msg['texts'].push(word);
+            }
+        }
+/*
         for (var i = 0; i < recentResults.length; ++i){
             var word = recentResults[i].transcript;
             var conf = recentResults[i].confidence;
             message += "<tr><td>" + i + "</td><td>" + word + "</td><td>" + conf + "</td></tr>";
             msg['texts'].push(word);
         }
+*/
         message += "</table>";
-        $('#messages').append(message);
+        $('#messages').prepend(message);
         console.log(JSON.stringify(msg));
         tabletVoice.publish(msg);
     };
@@ -81,38 +109,57 @@ $(function() {
     });
     $("#once").on("click", function(){
         if (voice_recog.continuous){
-            voice_recog.stop();
-            $("#speak").text(info.menu[voice_recog.lang].speak).attr("disabled", "");
-            voice_recog.continuous = false;
+            $("#speak").text(info.menu[voice_recog.lang].speak).removeAttr("disabled");
             $("#once").addClass("btn-primary");
             $("#continuous").removeClass("btn-primary");
+            voice_recog.abort();
+            voice_recog.continuous = false;
         }
     });
     $("#continuous").on("click", function (){
         if (!voice_recog.continuous){
             $("#speak").text(info.menu[voice_recog.lang].speak).attr("disabled", "disabled");
-            voice_recog.continuous = true;
             $("#continuous").addClass("btn-primary");
             $("#once").removeClass("btn-primary");
+            voice_recog.abort();
+            voice_recog.continuous = true;
             voice_recog.start();
         }
     });
     $("#detail").click( function (){
         if (this.checked){
-            voice_recog.stop();
+            console.log("detail enabled");
+            voice_recog.abort();
             voice_recog.interimResults = true;
             voice_recog.start();
         } else {
-            voice_recog.stop();
+            console.log("detail disabled");
+            voice_recog.abort();
             voice_recog.interimResults = false;
             voice_recog.start();
+        }
+    });
+
+    $("#publish-detail").click(function (){
+        if (this.checked){
+            console.log("publish detail enabled");
+            isPublishDetail = true;
+        } else {
+            console.log("publish detail disabled");
+            isPublishDetail = false;
         }
     });
 
     $("#lang-selector li").click(function (){
         console.log("lang selected: " + $(this).attr('value'));
         voice_recog.lang = $(this).attr('value');
+        voice_recog.start();
         showMenuString();
+    });
+
+    $("#clear-result").click(function (){
+        console.log("clear result");
+        $('#messages').html("");
     });
 
     info = {
@@ -124,6 +171,8 @@ $(function() {
                 stop: "停止",
                 language: "言語",
                 detail: "途中結果の表示",
+                publishdetail: "途中結果のパブリッシュ",
+                clear: "履歴の削除",
                 status: "状態",
                 result: "結果"
             },
@@ -134,6 +183,8 @@ $(function() {
                 stop: "Stop",
                 language: "Language",
                 detail: "Show Detail",
+                publishdetail: "Publish Detail",
+                clear: "Clear History",
                 status: "Current Status",
                 result: "Results"
             },
@@ -144,6 +195,8 @@ $(function() {
                 stop: "Выкл.",
                 language: "Язык",
                 detail: "Показать подробность",
+                publishdetail: "Publish Detail",
+                clear: "Чистить",
                 status: "Статус",
                 result: "Результат"
             },

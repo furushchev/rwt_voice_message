@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="rwt_voice_message.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rwt_voice_message</title>
   </head>
@@ -21,17 +22,20 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" id="lang-selector">
-            <li value="ja-JP">日本語</li>
+            <li value="ja-JP">Japanese</li>
             <li value="en-US">English</li>
             <li value="ru-RU">Russian</li>
           </ul>
         </div>
       </div>
       <label class="checkbox inline">
-        <input type="checkbox" id="detail" value="detail">
-        <span id="detail-label"></span>
+        <input type="checkbox" id="detail"><span id="detail-label"></span>
+      </label>
+      <label class="checkbox inline">
+        <input type="checkbox" id="publish-detail"><span id="publish-detail-label"></span>
       </label>
       <p><span id="status-label"></span>: <div id="status"></div></p>
+      <button id="clear-result" class="btn btn-warning"></button>
       <p><span id="result-label"></span>: <div id="messages"></div></p>
     </div>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
