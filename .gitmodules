@@ -1,6 +1,0 @@
-[submodule "local_pr2_demo"]
-	path = local_pr2_demo
-	url = git@bitbucket.org:furushchev/local_pr2_demo.git
-[submodule "rwt_voice_message"]
-	path = rwt_voice_message
-	url = git@github.com:furushchev/rwt_voice_message.git
