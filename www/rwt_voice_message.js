@@ -72,7 +72,7 @@ $(function() {
             var conf = e.results[i][0].confidence;
             if (word != "")
                 message += "<tr><td>" + (i - e.resultIndex + 1) + "</td><td>" + word + "</td><td>" + conf + "</td></tr>";
-            if (isPublishDetail) {
+            if (!isPublishDetail) {
                 msg['texts'].push(word);
             } else {
                 console.log("debug");
