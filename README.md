@@ -10,6 +10,12 @@ roslaunch rosbridge_server rosbridge_websocket.launch port:=8888
 rosrun roswww webserver.py
 ```
 
+Or,
+
+```
+roslaunch rwt_voice_message rwt_voice_message.launch
+```
+
 ### Browse and enjoy it!
 
 Open your browser, and access to:

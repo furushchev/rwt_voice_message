@@ -21,7 +21,19 @@ $(function() {
         $("#publish-detail-label").text(info.menu[voice_recog.lang].publishdetail);
     };
 
-    var voice_recog = new webkitSpeechRecognition();
+    var VoiceRecognition = window.webkitSpeechRecognition
+		|| window.mozSpeechRecognition
+		|| window.oSpeechRecognition
+		|| window.msSpeechRecognition
+		|| window.SpeechRecognition;
+
+	if (!VoiceRecognition){
+		document.body.innerHTML = "<h1>This Browser is not supported.</h1>"
+	}
+
+	var voice_recog = new VoiceRecognition();
+
+	                 
     voice_recog.lang = "ja-JP";
     voice_recog.continuous = false;
     voice_recog.interimResults = false;
