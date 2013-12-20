@@ -91,18 +91,18 @@ $(function() {
                 if (e.results[i][0].final) msg['texts'].push(word);
             }
         }
-/*
-        for (var i = 0; i < recentResults.length; ++i){
-            var word = recentResults[i].transcript;
-            var conf = recentResults[i].confidence;
-            message += "<tr><td>" + i + "</td><td>" + word + "</td><td>" + conf + "</td></tr>";
-            msg['texts'].push(word);
-        }
-*/
+
         message += "</table>";
         $('#messages').prepend(message);
         console.log(JSON.stringify(msg));
         tabletVoice.publish(msg);
+
+		if (!voice_recog.continuous){
+            console.log("speak off");
+            voice_recog.stop();
+            isSpeaking = false;
+            $("#speak").text(info.menu[voice_recog.lang].speak);
+		}			
     };
 
     var isSpeaking = false;
