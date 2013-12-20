@@ -10,7 +10,7 @@ roslaunch rosbridge_server rosbridge_websocket.launch port:=8888
 rosrun roswww webserver.py
 ```
 
-Or,
+Or, simply
 
 ```
 roslaunch rwt_voice_message rwt_voice_message.launch
