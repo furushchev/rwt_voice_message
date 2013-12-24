@@ -10,9 +10,21 @@
   <body>
     <div class="container">
       <div class="page-header">
-        <h1><span class="glyphicon glyphicon-star"></span>rwt_voice_message</h1>
+        <h1><span class="glyphicon glyphicon-star"></span>rwt_voice_message<small>robotwebtools voice message</small></h1>
       </div>
       <div class="btn-group btn-lg">
+		<form id="topic-form" role="form" class="form-inline">
+		  <div class="form-group">
+			<div class="row">
+			  <label class="sr-only" for="topic-input">topic</label>
+			  <input type="text" class="form-control" id="topic-name" placeholder="/Tablet/voice" val="/Tablet/voice">
+			  <div class="col-xs1">
+				<input type="number" class="form-control" id="alternative" placeholder="5" val="5">
+			  </div>
+			  <button type="submit" class="btn btn-success">Submit</button>
+			</div>
+		  </div>
+		</form>
         <button type="button" class="btn btn-default" id="continuous"></button>
         <button type="button" class="btn btn-primary" id="once"></button>
         <button type="button" class="btn btn-default" id="speak"></button>

@@ -3,9 +3,10 @@ $(function() {
         url: "ws://" + location.hostname + ":8888"
     });
 
+	var topic = "/Tablet/voice";
     var tabletVoice = new ROSLIB.Topic({
         ros: ros,
-        name: "/Tablet/voice",
+        name: topic,
         messageType: 'jsk_gui_msgs/VoiceMessage'
     });
 
@@ -200,6 +201,20 @@ $(function() {
         console.log("clear result");
         $('#messages').html("");
     });
+
+	$("#topic-form").submit(function(e) {
+		if (topic != $("#topic-name").val()) {
+			topic = $("#topic-name").val();
+			tabletVoice = new ROSLIB.Topic({
+				ros: ros,
+				name: topic,
+				messageType: 'jsk_gui_msgs/VoiceMessage'
+			});
+		}
+		var alt = parseInt($("#alternative").val());
+		if (alt) voice_recog.maxAlternatives = alt;
+		voice_recog.stop();
+	});
 
     showMenuString();
 });
