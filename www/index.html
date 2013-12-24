@@ -3,28 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="rwt_voice_message.css"/>
+    <!--<link rel="stylesheet" href="rwt_voice_message.css"/> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rwt_voice_message</title>
   </head>
   <body>
     <div class="container">
       <div class="page-header">
-        <h1><span class="glyphicon glyphicon-star"></span>rwt_voice_message<small>robotwebtools voice message</small></h1>
+        <h1><span class="glyphicon glyphicon-star"></span>rwt_voice_message <small>robotwebtools voice message</small></h1>
       </div>
       <div class="btn-group btn-lg">
-		<form id="topic-form" role="form" class="form-inline">
-		  <div class="form-group">
-			<div class="row">
-			  <label class="sr-only" for="topic-input">topic</label>
-			  <input type="text" class="form-control" id="topic-name" placeholder="/Tablet/voice" val="/Tablet/voice">
-			  <div class="col-xs1">
-				<input type="number" class="form-control" id="alternative" placeholder="5" val="5">
-			  </div>
-			  <button type="submit" class="btn btn-success">Submit</button>
-			</div>
-		  </div>
-		</form>
         <button type="button" class="btn btn-default" id="continuous"></button>
         <button type="button" class="btn btn-primary" id="once"></button>
         <button type="button" class="btn btn-default" id="speak"></button>
@@ -40,6 +28,13 @@
           </ol>
         </div>
       </div>
+      <form id="topic-form" role="form" class="form-inline">
+        <div class="form-group">
+          <input type="text" class="input-sm" id="topic-name" value="/Tablet/voice">
+          <input type="number" class="input-sm" id="alternative" value="5">
+          <button type="button" class="btn btn-success" id="topic-alt-button"></button>
+        </div>
+      </form>
       <label class="checkbox inline">
         <input type="checkbox" id="detail"><span id="detail-label"></span>
       </label>

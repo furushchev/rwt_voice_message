@@ -3,7 +3,7 @@ $(function() {
         url: "ws://" + location.hostname + ":8888"
     });
 
-	var topic = "/Tablet/voice";
+    var topic = "/Tablet/voice";
     var tabletVoice = new ROSLIB.Topic({
         ros: ros,
         name: topic,
@@ -21,6 +21,7 @@ $(function() {
         $("#clear-result").text(_("clear"));
         $("#result-label").text(_("result"));
         $("#publish-detail-label").text(_("publishdetail"));
+        $("#topic-alt-button").text(_("change"));
     };
 
     var VoiceRecognition = window.webkitSpeechRecognition
@@ -202,19 +203,23 @@ $(function() {
         $('#messages').html("");
     });
 
-	$("#topic-form").submit(function(e) {
-		if (topic != $("#topic-name").val()) {
-			topic = $("#topic-name").val();
-			tabletVoice = new ROSLIB.Topic({
-				ros: ros,
-				name: topic,
-				messageType: 'jsk_gui_msgs/VoiceMessage'
-			});
-		}
-		var alt = parseInt($("#alternative").val());
-		if (alt) voice_recog.maxAlternatives = alt;
-		voice_recog.stop();
-	});
+    $("#topic-alt-button").click(function(e) {
+        if (topic != $("#topic-name").val()) {
+            topic = $("#topic-name").val();
+            console.log("topic changed to " + topic);
+            tabletVoice = new ROSLIB.Topic({
+                ros: ros,
+                name: topic,
+                messageType: 'jsk_gui_msgs/VoiceMessage'
+            });
+        }
+        var alt = parseInt($("#alternative").val());
+        if (alt) {
+            console.log("alternative: " + alt);
+            voice_recog.maxAlternatives = alt;
+        }
+        voice_recog.stop();
+    });
 
     showMenuString();
 });
