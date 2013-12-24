@@ -1,5 +1,12 @@
 <launch>
-  <node pkg="roswww" type="webserver.py" name="roswww"></node>
+  <arg name="launch_roswww" default="false" />
+  <arg name="launch_https" default="true" />
+  <group if="$(arg launch_roswww)">
+    <node pkg="roswww" type="webserver.py" name="roswww"></node>
+  </group>
+  <group if="$(arg launch_https)">
+    <node pkg="rwt_voice_message" type="https_server.py" name="rwt_voice_message"></node>
+  </group>
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
     <arg name="port" value="8888" />
   </include>

@@ -28,3 +28,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+execute_process(gen_pem.sh)
+set_directoty_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "config/server.pem")
