@@ -11,7 +11,6 @@
   <depend package="android_voice_message"/>
   <depend package="roslibjs"/>
   <depend package="roswww"/>
-
 </package>
 
 
