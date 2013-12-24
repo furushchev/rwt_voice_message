@@ -10,7 +10,7 @@ $(function() {
     });
 
     var showMenuString = function (lang){
-        setLanguage(lang||"ja");
+        setLanguage(lang);
         $("#continuous").text(_("continuous"));
         $("#once").text(_("once"));
         $("#speak").text(_("speak"));
@@ -32,7 +32,7 @@ $(function() {
 
     var voice_recog = new VoiceRecognition();
 
-    voice_recog.lang = "ja";
+    voice_recog.lang = "ja-JP";
     voice_recog.continuous = false;
     voice_recog.interimResults = false;
     voice_recog.maxAlternatives = 5;
@@ -66,36 +66,62 @@ $(function() {
         $('#status').text(_("soundend"));
     };
 
+    voice_recog.onaudioend = function (){
+        console.log("recog audioend.");
+        if (voice_recog.continuous){
+            voice_recog.stop();
+            setTimeout(function(){
+                voice_recog.start();
+            }, 200);
+        }
+    };
+
     var addRow3 = function(col1, col2, col3){
         return "<tr><td>"+col1+"</td><td>"+col2+"</td><td>"+col3+"</td></tr>";
     };
 
     isPublishDetail = false;
     voice_recog.onresult = function(e){
-        var msg = new ROSLIB.Message({
-            texts: []
-        });
         var recentResults = e.results[e.results.length-1];
-
-        var table = '<table class="table table-striped">'
+        var texts = [];
+        var table = '<table class="table table-striped table-bordered table-condenced">'
         table += addRow3(_("number"), _("word"), _("confidence"));
-
-        for (var i = e.resultIndex; i < e.results.length; ++i){
-            var word = e.results[i][0].transcript;
-            var conf = e.results[i][0].confidence;
+        console.log(e);
+        console.log(recentResults);
+        for (var i = 0; i < recentResults.length; ++i){
+            var word = recentResults[i].transcript;
+            var conf = recentResults[i].confidence;
             if (word != "")
-                var num = i - e.resultIndex + 1;
-                table += addRow3(num, word, conf);
-            if (!isPublishDetail) {
-                msg['texts'].push(word);
+                table += addRow3(i+1, word, conf);
+            if (isPublishDetail) {
+                texts.push(word);
             } else {
-                if (e.results[i][0].final) msg['texts'].push(word);
+                if (recentResults.isFinal) texts.push(word);
             }
         }
+
+        // for (var i = e.resultIndex; i < e.results.length; ++i){
+        //     var word = e.results[i][0].transcript;
+        //     var conf = e.results[i][0].confidence;
+        //     if (word != "")
+        //         var num = i - e.resultIndex + 1;
+        //         table += addRow3(num, word, conf);
+        //     if (!isPublishDetail) {
+        //         msg['texts'].push(word);
+        //     } else {
+        //         if (e.results[i][0].final) msg['texts'].push(word);
+        //     }
+        // }
         table += "</table>";
         $('#messages').prepend(table);
-        console.log(JSON.stringify(msg));
-        tabletVoice.publish(msg);
+
+        if (texts.length > 0){
+            var msg = new ROSLIB.Message({
+                texts: texts
+            });
+            console.log('published: ' + JSON.stringify(msg));
+            tabletVoice.publish(msg);
+        }
 
         if (!voice_recog.continuous){
             console.log("speak off");
@@ -121,7 +147,7 @@ $(function() {
     });
     $("#once").on("click", function(){
         if (voice_recog.continuous){
-            $("#speak").text(info.menu[voice_recog.lang].speak).removeAttr("disabled");
+            $("#speak").text(_("speak")).removeAttr("disabled");
             $("#once").addClass("btn-primary");
             $("#continuous").removeClass("btn-primary");
             voice_recog.abort();
