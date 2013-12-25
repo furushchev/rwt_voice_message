@@ -1,5 +1,4 @@
 (function(window, undefined) {
-        /* The loaded JSON message store will be set on this object */
     window.__msgStore = {};
     window.__persistMsgStore = function(lang, data) {
         if(window.localStorage) {
@@ -10,14 +9,26 @@
         }
     };
     window.__getLanguageJSON = function(lang) {
-        var res = $.getJSON("locale/" + lang + ".json", function (json){
+/*        var res = $.getJSON("locale/" + lang + ".json", function (json){
             window.__persistMsgStore(lang, json);
+        });*/
+        var res = false;
+        $.ajax({
+            async: false,
+            url: "locale/" + lang + ".json",
+            dataType: "json",
+            success: function (json){
+                console.log("get json success");
+                res = true;
+            }
         });
+        return res;
     };
+
     window.setLanguage = function(l) {
         var lang = l || "ja-JP";
+
         if(window.localStorage) {
-            console.log("localstorage enabled");
             var localMsgStore = localStorage.getItem("localizationMsgStore"+lang);
             if(localMsgStore) {
                 console.log("use local cache");

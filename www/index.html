@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
-    <!--<link rel="stylesheet" href="rwt_voice_message.css"/> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rwt_voice_message</title>
   </head>
@@ -28,6 +27,7 @@
           </ol>
         </div>
       </div>
+      <button id="clear-result" class="btn btn-warning"></button>
       <form id="topic-form" role="form" class="form-inline">
         <div class="form-group">
           <input type="text" class="input-sm" id="topic-name" value="/Tablet/voice">
@@ -41,13 +41,12 @@
       <label class="checkbox inline">
         <input type="checkbox" id="publish-detail"><span id="publish-detail-label"></span>
       </label>
-      <p><span id="status-label"></span>: <div id="status"></div></p>
-      <button id="clear-result" class="btn btn-warning"></button>
+      <p><span id="status-label"></span>: <span id="status"></span></p>
       <p><span id="result-label"></span>: <div id="messages"></div></p>
     </div>
     <script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="eventemitter2.min.js"></script>
-    <script type="text/javascript" src="roslib.min.js"></script>
+    <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/0.4.11/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="i18n.js"></script>

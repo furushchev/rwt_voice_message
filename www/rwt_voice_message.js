@@ -102,18 +102,6 @@ $(function() {
             }
         }
 
-        // for (var i = e.resultIndex; i < e.results.length; ++i){
-        //     var word = e.results[i][0].transcript;
-        //     var conf = e.results[i][0].confidence;
-        //     if (word != "")
-        //         var num = i - e.resultIndex + 1;
-        //         table += addRow3(num, word, conf);
-        //     if (!isPublishDetail) {
-        //         msg['texts'].push(word);
-        //     } else {
-        //         if (e.results[i][0].final) msg['texts'].push(word);
-        //     }
-        // }
         table += "</table>";
         $('#messages').prepend(table);
 
